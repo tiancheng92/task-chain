@@ -66,7 +66,7 @@ func main() {
 			"测试发信字段5": "5",
 			"测试发信字段6": "6",
 		}),
-		task_chain.SetTaskChainSendLarkUserID("xxxxxxxxxx"),
+		task_chain.SetTaskChainSendLarkUserID(false, "xxxxxxxxxx"),
 	)
 
 	ln := tc.AddTask(NewTaskOne(1)).

@@ -43,15 +43,19 @@ func SetTaskChainInfoForMsg(info map[string]string) chainOption {
 	}
 }
 
-func SetTaskChainSendLarkUserID(userIDs ...string) chainOption {
+func SetTaskChainSendLarkUserID(need bool, userIDs ...string) chainOption {
 	return func(setting *chainSetting) {
-		setting.larkUserID = userIDs
+		if need {
+			setting.larkUserID = userIDs
+		}
 	}
 }
 
-func SetTaskChainSendLarkGroupID(groupIDs ...string) chainOption {
+func SetTaskChainSendLarkGroupID(need bool, groupIDs ...string) chainOption {
 	return func(setting *chainSetting) {
-		setting.larkGroupID = groupIDs
+		if need {
+			setting.larkGroupID = groupIDs
+		}
 	}
 }
 
