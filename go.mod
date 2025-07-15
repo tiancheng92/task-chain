@@ -1,11 +1,11 @@
 module github.com/tiancheng92/task-chain
 
-go 1.24
+go 1.23.0
 
 require (
 	github.com/Yostardev/gf v1.0.4
-	github.com/Yostardev/json v1.0.10
-	github.com/Yostardev/requests v1.0.14
+	github.com/Yostardev/json v1.0.7
+	github.com/Yostardev/requests v1.0.10
 	github.com/cloudwego/eino v0.3.51
 	github.com/cloudwego/eino-ext/components/model/openai v0.0.0-20250710065240-482d48888f25
 	github.com/fatih/color v1.18.0
