@@ -8,16 +8,17 @@ import (
 )
 
 type TaskChain struct {
-	ID         uint64                      `json:"id" gorm:"primary_key;type:bigint unsigned;not null"`
-	StartTime  *time.Time                  `json:"start_time" gorm:"comment:开始时间"`
-	EndTime    *time.Time                  `json:"end_time" gorm:"comment:结束时间"`
-	Name       string                      `json:"name" gorm:"comment:任务名"`
-	NameForMsg string                      `json:"name_for_msg" gorm:"comment:发信用任务名称"`
-	InfoForMsg datatypes.JSONMap           `json:"info_for_msg" gorm:"type:json;comment:发信用信息"`
-	MsgIDs     datatypes.JSONSlice[string] `json:"msg_ids" gorm:"type:json;comment:飞书信息ID"`
-	Username   string                      `json:"username" gorm:"comment:执行用户"`
-	Status     string                      `json:"status" gorm:"type:enum('running', 'failed', 'success');not null;default:'running';comment:状态"`
-	Nodes      []*TaskNode                 `json:"nodes" gorm:"-"`
+	ID             uint64                      `json:"id" gorm:"primary_key;type:bigint unsigned;not null"`
+	StartTime      *time.Time                  `json:"start_time" gorm:"comment:开始时间"`
+	EndTime        *time.Time                  `json:"end_time" gorm:"comment:结束时间"`
+	Name           string                      `json:"name" gorm:"comment:任务名"`
+	Username       string                      `json:"username" gorm:"comment:执行用户"`
+	Status         string                      `json:"status" gorm:"type:enum('running', 'failed', 'success');not null;default:'running';comment:状态"`
+	NameForMsg     string                      `json:"name_for_msg" gorm:"comment:发信用任务名称"`
+	InfoForMsg     datatypes.JSONMap           `json:"info_for_msg" gorm:"type:json;comment:发信用信息"`
+	MsgIDs         datatypes.JSONSlice[string] `json:"msg_ids" gorm:"type:json;comment:飞书信息ID"`
+	UsernameForMsg string                      `json:"username_for_msg" gorm:"comment:执行用户(发信用)"`
+	Nodes          []*TaskNode                 `json:"nodes" gorm:"-"`
 }
 
 func GetTaskChainByID(db *gorm.DB, id uint64, withNode bool) (*TaskChain, error) {
@@ -35,12 +36,13 @@ func GetTaskChainByID(db *gorm.DB, id uint64, withNode bool) (*TaskChain, error)
 	return &ent, nil
 }
 
-func CreateTaskChain(db *gorm.DB, username, name, nameForMsg string, infoForMsg map[string]any) (*TaskChain, error) {
+func CreateTaskChain(db *gorm.DB, username, name, nameForMsg string, infoForMsg map[string]any, usernameForMsg string) (*TaskChain, error) {
 	ent := &TaskChain{
-		Name:       name,
-		Username:   username,
-		NameForMsg: nameForMsg,
-		InfoForMsg: infoForMsg,
+		Name:           name,
+		Username:       username,
+		NameForMsg:     nameForMsg,
+		InfoForMsg:     infoForMsg,
+		UsernameForMsg: usernameForMsg,
 	}
 	err := db.Model(new(TaskChain)).Create(ent).Error
 	if err != nil {

@@ -20,6 +20,7 @@ type TaskNode struct {
 	FailedReason               string                      `json:"failed_reason" gorm:"type:longtext;not null;comment:失败原因"`
 	FailedReasonAfterAIAnalyze string                      `json:"failed_reason_after_ai_analyze" gorm:"type:longtext;not null;comment:AI分析的错误原因"`
 	IgnoreFailed               bool                        `json:"ignore_failed" gorm:"comment:是否忽略报错"`
+	MustExecute                bool                        `json:"must_execute" gorm:"comment:必须执行"`
 	ChainID                    uint64                      `json:"chain_id" gorm:"type:bigint unsigned;index;not null;comment:任务链ID"`
 }
 
@@ -75,7 +76,7 @@ func AppendTaskNode(db *gorm.DB, id, nextNodeID uint64) (*TaskNode, error) {
 	return UpdateTaskNode(db, id, ent)
 }
 
-func CreateTaskNode(db *gorm.DB, chainID uint64, parentID uint64, name string, nameForMsg string, parameter map[string]any, ignoreFailed bool) (*TaskNode, error) {
+func CreateTaskNode(db *gorm.DB, chainID uint64, parentID uint64, name string, nameForMsg string, parameter map[string]any, ignoreFailed, mustExecute bool) (*TaskNode, error) {
 	ent := &TaskNode{
 		ChainID:      chainID,
 		ParentID:     parentID,
@@ -84,6 +85,7 @@ func CreateTaskNode(db *gorm.DB, chainID uint64, parentID uint64, name string, n
 		Status:       "waiting",
 		Parameter:    parameter,
 		IgnoreFailed: ignoreFailed,
+		MustExecute:  mustExecute,
 	}
 
 	err := db.Transaction(func(tx *gorm.DB) error {

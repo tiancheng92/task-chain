@@ -4,6 +4,7 @@ type chainSetting struct {
 	taskChainName       string
 	taskChainNameForMsg string
 	username            string
+	usernameForMsg      string
 	infoForMsg          map[string]any
 	larkUserID          []string
 	larkGroupID         []string
@@ -32,6 +33,12 @@ func SetTaskChainInitiator(username string) chainOption {
 func SetTaskChainNameForMsg(name string) chainOption {
 	return func(setting *chainSetting) {
 		setting.taskChainNameForMsg = name
+	}
+}
+
+func SetTaskChainInitiatorForMsg(usernameForMsg string) chainOption {
+	return func(setting *chainSetting) {
+		setting.usernameForMsg = usernameForMsg
 	}
 }
 

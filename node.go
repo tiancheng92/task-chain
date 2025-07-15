@@ -152,7 +152,7 @@ func (n *node) watch(wg *sync.WaitGroup) {
 }
 
 func (n *node) prepareDB(tx *gorm.DB, chainID, parentID uint64) error {
-	m, err := modal.CreateTaskNode(tx, chainID, parentID, n.task.getName(), n.task.getNameForMsg(), n.task.getParameters(), n.task.isIgnoreFailed())
+	m, err := modal.CreateTaskNode(tx, chainID, parentID, n.task.getName(), n.task.getNameForMsg(), n.task.getParameters(), n.task.isIgnoreFailed(), n.task.isMustExecute())
 	if err != nil {
 		return err
 	}
@@ -174,20 +174,29 @@ func (n *node) run(isAbandon bool) {
 	} else {
 		runTask(n.task)
 	}
+
+	for k, v := range n.task.getNextTaskParameter() {
+		n.setNextTaskParameter(k, v)
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(len(n.nextTaskNodes))
 	for i := range n.nextTaskNodes {
 		go func() {
 			defer wg.Done()
-			for k, v := range n.task.getNextTaskParameter() {
-				n.nextTaskNodes[i].task.addParameter(k, v)
-			}
-			n.nextTaskNodes[i].run(!(n.task.getStatus() == "success" || n.task.isIgnoreFailed()))
+			n.nextTaskNodes[i].run(!(n.task.getStatus() == "success" || n.task.isIgnoreFailed() || n.nextTaskNodes[i].task.isMustExecute()))
 		}()
 	}
 	wg.Wait()
 
 	return
+}
+
+func (n *node) setNextTaskParameter(k string, v any) {
+	for i := range n.nextTaskNodes {
+		n.nextTaskNodes[i].task.addParameter(k, v)
+		n.nextTaskNodes[i].setNextTaskParameter(k, v)
+	}
 }
 
 func (n *node) close() {

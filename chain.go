@@ -16,6 +16,7 @@ type chain struct {
 	*startNode
 	id                  uint64
 	username            string
+	usernameForMsg      string
 	taskChainName       string
 	taskChainNameForMsg string
 	infoForMsg          map[string]any
@@ -28,6 +29,7 @@ func NewTaskChain(opts ...chainOption) *chain {
 	s := getChainSetting(opts)
 	return &chain{
 		username:            s.username,
+		usernameForMsg:      s.usernameForMsg,
 		taskChainName:       s.taskChainName,
 		taskChainNameForMsg: s.taskChainNameForMsg,
 		infoForMsg:          s.infoForMsg,
@@ -45,7 +47,7 @@ func (c *chain) AddTask(taskInterface TaskInterface) *node {
 
 func (c *chain) prepareDB() error {
 	return modal.GetDB().Transaction(func(tx *gorm.DB) error {
-		tc, err := modal.CreateTaskChain(tx, c.username, c.taskChainName, c.taskChainNameForMsg, c.infoForMsg)
+		tc, err := modal.CreateTaskChain(tx, c.username, c.taskChainName, c.taskChainNameForMsg, c.infoForMsg, c.usernameForMsg)
 		if err != nil {
 			return err
 		}

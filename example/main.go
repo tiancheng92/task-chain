@@ -32,6 +32,7 @@ func NewTaskOne(i int) *TaskOne {
 			task_chain.SetTaskNameForMsg("测试任务 - "+strconv.Itoa(i)),
 			task_chain.SetRetryTimes(3),
 			task_chain.IsIgnoreFailed(i == 14 || i == 45),
+			task_chain.IsMustExecute(i == 35),
 		),
 	}
 }
@@ -43,7 +44,7 @@ func (to *TaskOne) Run() error {
 		return err
 	}
 
-	if indexStr == "2" || indexStr == "3" {
+	if indexStr == "2" {
 		to.AddParameterToNextTask("parent_index", 2)
 	}
 
@@ -56,6 +57,7 @@ func (to *TaskOne) Run() error {
 func main() {
 	tc := task_chain.NewTaskChain(
 		task_chain.SetTaskChainInitiator("xxxxxxxxxx"),
+		task_chain.SetTaskChainInitiatorForMsg("6666666666"),
 		task_chain.SetTaskChainName("task_chain_1"),
 		task_chain.SetTaskChainNameForMsg("任务链-1"),
 		task_chain.SetTaskChainInfoForMsg(map[string]string{
@@ -72,7 +74,7 @@ func main() {
 	ln := tc.AddTask(NewTaskOne(1)).
 		AddTask(NewTaskOne(2)).
 		AddTask(NewTaskOne(3))
-	for i := range 2 {
+	for i := range 4 {
 		ln.AddTask(NewTaskOne(4 + i*10)).
 			AddTask(NewTaskOne(5 + i*10)).
 			AddTask(NewTaskOne(6 + i*10))

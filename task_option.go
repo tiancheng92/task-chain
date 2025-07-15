@@ -5,6 +5,7 @@ type taskSetting struct {
 	taskNameForMsg string
 	parameter      map[string]any
 	ignoreFailed   bool
+	mustExecute    bool
 	retryTimes     int
 }
 
@@ -36,6 +37,12 @@ func SetTaskParameter(parameter map[string]any) taskOption {
 func IsIgnoreFailed(t bool) taskOption {
 	return func(setting *taskSetting) {
 		setting.ignoreFailed = t
+	}
+}
+
+func IsMustExecute(t bool) taskOption {
+	return func(setting *taskSetting) {
+		setting.mustExecute = t
 	}
 }
 

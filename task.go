@@ -20,6 +20,7 @@ type TaskInterface interface {
 	getFailedReason() string
 	getNextTaskParameter() map[string]any
 	isIgnoreFailed() bool
+	isMustExecute() bool
 	addParameter(key string, value any)
 	setStatusToAbandon()
 	setStatusToRunning()
@@ -58,6 +59,7 @@ type Task struct {
 	statusStr         string
 	failedReason      string
 	ignoreFailed      bool
+	mustExecute       bool
 	retryTimes        int
 }
 
@@ -70,6 +72,7 @@ func NewTask(opts ...taskOption) *Task {
 		name:         s.taskName,
 		nameForMsg:   s.taskNameForMsg,
 		ignoreFailed: s.ignoreFailed,
+		mustExecute:  s.mustExecute,
 		parameter:    s.parameter,
 		retryTimes:   s.retryTimes,
 	}
@@ -202,6 +205,10 @@ func (t *Task) getRetryTimes() int {
 
 func (t *Task) isIgnoreFailed() bool {
 	return t.ignoreFailed
+}
+
+func (t *Task) isMustExecute() bool {
+	return t.mustExecute
 }
 
 func (t *Task) close() {
