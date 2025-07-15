@@ -31,7 +31,7 @@ func getLarkMsgContent(taskChainID uint64) (string, error) {
 		setTaskName(tc.NameForMsg).
 		setTaskID(tc.ID).
 		setStatus(tc.Status).
-		setBasicInfo(tc.StartTime, tc.EndTime, tc.Username)
+		setBasicInfo(tc.StartTime, tc.EndTime, tc.UsernameForMsg)
 
 	var keys []string
 
