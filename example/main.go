@@ -14,7 +14,18 @@ func init() {
 		task_chain.SetDBByDsn("xxxxxxxxxx:xxxxxxxxxx@tcp(xxxxxxxxxx:3306)/xxxxxxxxxx?charset=utf8mb4&parseTime=true&loc=Local&interpolateParams=true"),
 		task_chain.SetLarkAppInfo("xxxxxxxxxx", "xxxxxxxxxx", "https://xxxxxxxxxx.xxxxxxxxxx.com/xxxxxxxxxx/xxxxxxxxxx?task_id=%d"),
 		task_chain.SetLLMInfo("https://xxxxxxxxxx.xxxxxxxxxx.com", "xxxxxxxxxx", "xxxxxxxxxx/xxxxxxxxxx"),
+		task_chain.SetCustomPlugins(new(PrintNodeStatusPlugin)),
 	)
+
+}
+
+type PrintNodeStatusPlugin struct {
+	*task_chain.DefaultCustomPlugin
+}
+
+func (p *PrintNodeStatusPlugin) WhenNodeStatusChange(chainID uint64, nodeID uint64, status string) error {
+	log.Infof("chain id: %d node id: %d status: %s", chainID, nodeID, status)
+	return nil
 }
 
 type TaskOne struct {

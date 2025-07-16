@@ -96,10 +96,25 @@ func (c *chain) Run() error {
 		wg := new(sync.WaitGroup)
 		// 开始监听每个任务节点的状态
 		c.startNode.startWatch(wg)
+
+		// 执行插件中运行前任务
+		for i := range customPluginList {
+			if err := customPluginList[i].BeforeRunning(c.chainID); err != nil {
+				return errors.WithStack(err)
+			}
+		}
+
 		// 开始执行任务
 		c.run()
 		//等待监听结束
 		wg.Wait()
+
+		// 执行插件中运行后任务
+		for i := range customPluginList {
+			if err := customPluginList[i].AfterRunning(c.chainID); err != nil {
+				return errors.WithStack(err)
+			}
+		}
 		// 资源回收
 		c.close()
 		if gf.ArrayContains(plugins, "send_lark_msg") {

@@ -18,6 +18,7 @@ type initSetting struct {
 	llmApiKey       string
 	llmModel        string
 	plugins         []string
+	customPlugins   []CustomPlugin
 }
 
 type initOption func(setting *initSetting)
@@ -66,6 +67,12 @@ func SetLLMInfo(baseUrl, apiKey, modelName string) initOption {
 	}
 }
 
+func SetCustomPlugins(cpl ...CustomPlugin) initOption {
+	return func(setting *initSetting) {
+		setting.customPlugins = cpl
+	}
+}
+
 func Init(opts ...initOption) {
 	var setting initSetting
 	for i := range opts {
@@ -83,4 +90,5 @@ func Init(opts ...initOption) {
 	lark.SetAppInfo(setting.larkAppID, setting.larkAppSecret, setting.superLinkUrlFmt)
 	llm.SetLLMInfo(setting.llmBaseUrl, setting.llmApiKey, setting.llmModel)
 	plugins = setting.plugins
+	customPluginList = setting.customPlugins
 }

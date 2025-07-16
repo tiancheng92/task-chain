@@ -143,6 +143,13 @@ func (n *node) watch(wg *sync.WaitGroup) {
 					}
 				}
 
+				for i := range customPluginList {
+					if err := customPluginList[i].WhenNodeStatusChange(n.chainID, n.id, status); err != nil {
+						log.Errorf("%+v", err)
+						return
+					}
+				}
+
 				if strings.Contains("failed/success/abandon", status) {
 					return
 				}
