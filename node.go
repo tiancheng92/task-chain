@@ -119,13 +119,6 @@ func (n *node) watch(wg *sync.WaitGroup) {
 					ent.FailedReason = n.task.getFailedReason()
 					ent.Parameter = n.task.getParameters()
 
-					if gf.ArrayContains(plugins, "use_llm") && ent.FailedReason != "" {
-						ent.FailedReasonAfterAIAnalyze, err = llm.AnalyzeError(ent.FailedReason)
-						if err != nil {
-							log.Errorf("%+v", err)
-						}
-					}
-
 					if _, err = modal.UpdateTaskNode(modal.GetDB(), n.id, ent); err != nil {
 						log.Errorf("%+v", err)
 						return
@@ -134,6 +127,17 @@ func (n *node) watch(wg *sync.WaitGroup) {
 					if _, err = modal.UpdateTaskChain(modal.GetDB(), n.chainID); err != nil {
 						log.Errorf("%+v", err)
 						return
+					}
+
+					if gf.ArrayContains(plugins, "use_llm") && ent.FailedReason != "" {
+						ent.FailedReasonAfterAIAnalyze, err = llm.AnalyzeError(ent.FailedReason)
+						if err != nil {
+							log.Errorf("%+v", err)
+						} else {
+							if _, err = modal.UpdateTaskNode(modal.GetDB(), n.id, ent); err != nil {
+								log.Errorf("%+v", err)
+							}
+						}
 					}
 				}
 				if gf.ArrayContains(plugins, "send_lark_msg") {
