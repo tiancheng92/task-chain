@@ -1,11 +1,12 @@
 package modal
 
 import (
+	"time"
+
 	"github.com/tiancheng92/task-chain/internal/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"time"
 )
 
 const (

@@ -3,10 +3,11 @@ package llm
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/cloudwego/eino-ext/components/model/openai"
 	"github.com/cloudwego/eino/schema"
 	"github.com/pkg/errors"
-	"time"
 )
 
 func AnalyzeError(errorInfo string) (string, error) {

@@ -1,11 +1,11 @@
 package log
 
 import (
+	"encoding/json"
 	"io"
 	"time"
 
 	"github.com/Yostardev/gf"
-	"github.com/Yostardev/json"
 	"github.com/fatih/color"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

@@ -2,8 +2,9 @@ package task_chain
 
 import (
 	"context"
-	"github.com/looplab/fsm"
 	"time"
+
+	"github.com/looplab/fsm"
 )
 
 type TaskInterface interface {

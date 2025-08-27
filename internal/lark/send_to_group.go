@@ -1,7 +1,6 @@
 package lark
 
 import (
-	"github.com/Yostardev/requests"
 	"github.com/pkg/errors"
 )
 
@@ -33,26 +32,22 @@ func sendToGroup(chatID, content string) (string, error) {
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-
-	res, err := requests.New().SetUrl("https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id").
-		SetJsonBody(map[string]string{
+	var resp sendToGroupResponse
+	res, err := larkClient().R().SetResult(&resp).
+		SetBody(map[string]string{
 			"receive_id": chatID,
 			"msg_type":   "interactive",
 			"content":    content,
 		}).
-		AddJsonHeader().
-		AddHeader("Authorization", "Bearer "+token).
-		Post()
+		SetQueryParam("receive_id_type", "chat_id").
+		SetAuthToken(token).
+		Post("/open-apis/im/v1/messages")
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	if res.StatusCode != 200 {
-		return "", errors.New("feishu send message error: " + res.Body.String())
+	if res.StatusCode() != 200 {
+		return "", errors.New("feishu send message error: " + res.String())
 	}
-	var resp sendToGroupResponse
-	err = res.Body.JsonBind(&resp)
-	if err != nil {
-		return "", errors.WithStack(err)
-	}
+
 	return resp.Data.MessageID, nil
 }

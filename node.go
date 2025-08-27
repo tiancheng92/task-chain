@@ -1,14 +1,15 @@
 package task_chain
 
 import (
+	"strings"
+	"sync"
+
 	"github.com/Yostardev/gf"
 	"github.com/tiancheng92/task-chain/internal/lark"
 	"github.com/tiancheng92/task-chain/internal/llm"
 	"github.com/tiancheng92/task-chain/internal/log"
 	"github.com/tiancheng92/task-chain/internal/modal"
 	"gorm.io/gorm"
-	"strings"
-	"sync"
 )
 
 type startNode struct {
@@ -50,26 +51,22 @@ func (n *startNode) startWatch(wg *sync.WaitGroup) {
 }
 
 func (n *startNode) run() {
-	var wg sync.WaitGroup
-	wg.Add(len(n.nextTaskNodes))
+	wg := new(sync.WaitGroup)
 	for i := range n.nextTaskNodes {
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			n.nextTaskNodes[i].run(false)
-		}()
+		})
 	}
 	wg.Wait()
 	return
 }
 
 func (n *startNode) close() {
-	var wg sync.WaitGroup
-	wg.Add(len(n.nextTaskNodes))
+	wg := new(sync.WaitGroup)
 	for i := range n.nextTaskNodes {
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			n.nextTaskNodes[i].close()
-		}()
+		})
 	}
 	wg.Wait()
 	return
@@ -99,9 +96,7 @@ func (n *node) startWatch(wg *sync.WaitGroup) {
 }
 
 func (n *node) watch(wg *sync.WaitGroup) {
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		c := n.task.getChan()
 		for {
 			select {
@@ -159,7 +154,7 @@ func (n *node) watch(wg *sync.WaitGroup) {
 				}
 			}
 		}
-	}()
+	})
 }
 
 func (n *node) prepareDB(tx *gorm.DB, chainID, parentID uint64) error {
@@ -190,16 +185,13 @@ func (n *node) run(isAbandon bool) {
 		n.setNextTaskParameter(k, v)
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(len(n.nextTaskNodes))
+	wg := new(sync.WaitGroup)
 	for i := range n.nextTaskNodes {
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			n.nextTaskNodes[i].run(!(n.task.getStatus() == "success" || n.task.isIgnoreFailed() || n.nextTaskNodes[i].task.isMustExecute()))
-		}()
+		})
 	}
 	wg.Wait()
-
 	return
 }
 
@@ -212,12 +204,11 @@ func (n *node) setNextTaskParameter(k string, v any) {
 
 func (n *node) close() {
 	n.task.close()
-	var wg sync.WaitGroup
-	wg.Add(len(n.nextTaskNodes))
+	wg := new(sync.WaitGroup)
 	for i := range n.nextTaskNodes {
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			n.nextTaskNodes[i].close()
-		}()
+		})
 	}
+	wg.Wait()
 }

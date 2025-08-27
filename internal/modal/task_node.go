@@ -1,10 +1,11 @@
 package modal
 
 import (
+	"time"
+
 	"github.com/pkg/errors"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"time"
 )
 
 type TaskNode struct {

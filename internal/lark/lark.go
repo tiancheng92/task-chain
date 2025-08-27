@@ -1,12 +1,13 @@
 package lark
 
 import (
-	"github.com/pkg/errors"
-	"github.com/tiancheng92/task-chain/internal/log"
-	"github.com/tiancheng92/task-chain/internal/modal"
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/tiancheng92/task-chain/internal/log"
+	"github.com/tiancheng92/task-chain/internal/modal"
 )
 
 var (
