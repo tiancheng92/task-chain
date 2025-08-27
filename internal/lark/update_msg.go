@@ -16,7 +16,7 @@ func updateMsg(messageID, content string) error {
 		}).
 		SetAuthToken(token).
 		SetPathParam("message_id", messageID).
-		Post("/open-apis/im/v1/messages/{message_id}")
+		Patch("/open-apis/im/v1/messages/{message_id}")
 	if err != nil {
 		return errors.WithStack(err)
 	}
