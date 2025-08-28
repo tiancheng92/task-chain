@@ -105,7 +105,7 @@ func (n *node) watch(wg *sync.WaitGroup) {
 					ent, err := modal.GetTaskNode(modal.GetDB(), n.id)
 					if err != nil {
 						log.Errorf("%+v", err)
-						return
+						continue
 					}
 
 					ent.Status = status
@@ -116,12 +116,10 @@ func (n *node) watch(wg *sync.WaitGroup) {
 
 					if _, err = modal.UpdateTaskNode(modal.GetDB(), n.id, ent); err != nil {
 						log.Errorf("%+v", err)
-						return
 					}
 
 					if _, err = modal.UpdateTaskChain(modal.GetDB(), n.chainID); err != nil {
 						log.Errorf("%+v", err)
-						return
 					}
 
 					if gf.ArrayContains(plugins, "use_llm") && ent.FailedReason != "" {
@@ -144,7 +142,6 @@ func (n *node) watch(wg *sync.WaitGroup) {
 				for i := range customPluginList {
 					if err := customPluginList[i].WhenNodeStatusChange(n.chainID, n.id, status); err != nil {
 						log.Errorf("%+v", err)
-						return
 					}
 				}
 
