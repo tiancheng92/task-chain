@@ -95,29 +95,25 @@ func SendMsg(chainID uint64, larkGroupIDs, larkUserIDs []string) error {
 	}
 
 	for i := range larkUserIDs {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			msgID, err := sendToUser(larkUserIDs[i], content)
 			if err != nil {
 				log.Errorf("%+v", err)
 				return
 			}
 			msgIDs = append(msgIDs, msgID)
-		}()
+		})
 	}
 
 	for i := range larkGroupIDs {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			msgID, err := sendToGroup(larkGroupIDs[i], content)
 			if err != nil {
 				log.Errorf("%+v", err)
 				return
 			}
 			msgIDs = append(msgIDs, msgID)
-		}()
+		})
 	}
 
 	wg.Wait()
