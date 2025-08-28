@@ -127,7 +127,7 @@ func SendMsg(chainID uint64, larkGroupIDs, larkUserIDs []string) error {
 
 func UpdateMsg(taskChainID uint64) error {
 	if _, ok := TimeTickMap[taskChainID]; !ok {
-		TimeTickMap[taskChainID] = time.Tick(200 * time.Millisecond)
+		TimeTickMap[taskChainID] = time.Tick(500 * time.Millisecond)
 	}
 
 	<-TimeTickMap[taskChainID]

@@ -138,7 +138,6 @@ func (n *node) watch(wg *sync.WaitGroup) {
 				if gf.ArrayContains(plugins, "send_lark_msg") {
 					if err := lark.UpdateMsg(n.chainID); err != nil {
 						log.Errorf("%+v", err)
-						return
 					}
 				}
 
