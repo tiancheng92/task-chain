@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Yostardev/gf"
+	"github.com/bytedance/sonic"
 )
 
 type MessageContentForTask struct {
@@ -69,7 +70,7 @@ type MessageContentForTask struct {
 func newMessageContentForTask() *MessageContentForTask {
 	defaultMsg := `{"schema":"2.0","config":{"update_multi":true,"style":{"text_size":{"normal_v2":{"default":"normal","pc":"normal","mobile":"heading"}}}},"body":{"direction":"vertical","padding":"12px 12px 12px 12px","elements":[{"tag":"markdown","content":"","text_align":"left","text_size":"normal_v2","margin":"0px 0px 0px 0px"},{"tag":"hr","margin":"0px 0px 0px 0px"},{"tag":"div","text":{"tag":"plain_text","content":"任务进度","text_size":"heading","text_align":"left","text_color":"default"},"margin":"0px 0px 0px 0px"},{"tag":"markdown","content":"","text_align":"left","text_size":"normal_v2","margin":"0px 0px 0px 0px"},{"tag":"button","text":{"tag":"plain_text","content":"查看详情"},"type":"primary_filled","width":"fill","size":"large","behaviors":[{"type":"open_url","default_url":"","pc_url":"","ios_url":"","android_url":""}],"margin":"0px 0px 0px 0px"}]},"header":{"title":{"tag":"plain_text","content":""},"subtitle":{"tag":"plain_text","content":""},"template":"","padding":"12px 12px 12px 12px"}}`
 	var mc MessageContentForTask
-	_ = json.Unmarshal(gf.StringToBytes(defaultMsg), &mc)
+	_ = sonic.Unmarshal(gf.StringToBytes(defaultMsg), &mc)
 	return &mc
 }
 

@@ -1,11 +1,11 @@
 package log
 
 import (
-	"encoding/json"
 	"io"
 	"time"
 
 	"github.com/Yostardev/gf"
+	"github.com/bytedance/sonic"
 	"github.com/fatih/color"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -33,7 +33,7 @@ func init() {
 			CallerKey:     "caller",
 			LineEnding:    zapcore.DefaultLineEnding,
 			NewReflectedEncoder: func(writer io.Writer) zapcore.ReflectedEncoder {
-				enc := json.NewEncoder(writer)
+				enc := sonic.ConfigDefault.NewEncoder(writer)
 				enc.SetEscapeHTML(false)
 				return enc
 			},

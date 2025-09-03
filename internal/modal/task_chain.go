@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"gorm.io/datatypes"
+	"github.com/tiancheng92/datatypes"
 	"gorm.io/gorm"
 )
 
